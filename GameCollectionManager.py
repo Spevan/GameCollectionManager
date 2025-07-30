@@ -24,8 +24,10 @@ class Game:
         self.playtime = playtime
         self.notes = notes
 
-    def GetGame():
-        print(self.name + ", " + self.releaseDate + ", " + self.platform + ", " + self.rating + ", " + self.playtime + ", " + self.notes)
+    def GetGame(self):
+        line = self.name + "," + str(self.releaseDate) + "," + self.platform + "," + str(self.rating) + "," + self.playtime + "," + self.notes
+        print(line)
+        return line
 
 filepath = os.getcwd() + "\\myCollection.txt"
 if os.path.exists(filepath):
@@ -39,7 +41,10 @@ if os.path.exists(filepath):
             print("Your collection has been loaded.")
             fileLines = file.readlines()
             for line in fileLines:
-                    print("lol")
+                #file.readline(line)
+                cleanedline = line.split(",")
+                newGame = Game(cleanedline[0], int(cleanedline[1]), cleanedline[2], int(cleanedline[3]), cleanedline[4], cleanedline[5])
+                Games.append(newGame)
             break
         else:
             print("New collection will be created.")
@@ -60,9 +65,11 @@ while True:
     elif options == 2:
         print("Altering current collection.")
         name = input("Enter the name of the game you want to add: ")
-        releaseDate = input("Enter the release date of the game: ")
+        releaseDate = input("Enter the release year of the game: ")
+        releaseDate = int(releaseDate)
         platform = input("Enter the platform you own this game on: ")
         rating = input("Enter the rating you would give this game: ")
+        rating = int(rating)
         playtime = input("Enter the amount of time (in hours) that you played the game: ")
         notes = input("Enter any additional notes you have on the game: ")
         newGame = Game(name, releaseDate, platform, rating, playtime, notes)
@@ -70,13 +77,15 @@ while True:
         options = 0
     elif options == 3:
         print("Viewing current collection.")
-        for Game in Games:
-            print(Game.GetGame)
+        sortedGames = sorted(Games, key=lambda p:p.name)
+        for Game in sortedGames:
+            Game.GetGame()
+        options = 0
     elif options == 4:
         print("Saving your collection.")
         if answer != "Yes" or answer != "yes":
             file = open(filepath, "w")
         for Game in Games:
-            file.write(Game)
+            file.write(Game.GetGame())
         file.close()
         break
